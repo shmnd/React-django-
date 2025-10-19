@@ -11,21 +11,39 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import warnings,os,ast
+from django.core.management.utils import get_random_secret_key
+from dotenv import load_dotenv
+load_dotenv()
+
+def get_bool_from_env(name, default_value):
+    if name in os.environ:
+        value = os.environ[name]
+        try:
+            return ast.literal_eval(value)
+        except ValueError as e:
+            raise ValueError("{} is an invalid value for {}".format(value, name)) from e
+    return default_value
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-cu7917o_*y=zx13hk1g!xd9%ox1^9u*xsp(&u+fpjokk=w1(_('
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG: bool = get_bool_from_env("DEBUG", False)
 
-ALLOWED_HOSTS = []
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY and DEBUG:
+    warnings.warn("SECRET_KEY not configured, using a random temporary key.")
+    SECRET_KEY = get_random_secret_key()
+
+
+
+# ALLOWED_HOSTS = os.environ.get["ALLOWED_HOSTS","localhost","127.0.0.1,"]
 
 
 # Application definition
@@ -37,16 +55,30 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'apps.Auth',
-    'apps.user'
+  
 ]
+
+LOCAL_APPS = [
+    'apps.Auth',
+    'apps.user' 
+    
+]
+
+THIRD_PARTY_APPS = [
+    'rest_framework',
+    "corsheaders",
+    'drf_yasg',
+]
+
+
+INSTALLED_APPS = INSTALLED_APPS + LOCAL_APPS  + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
