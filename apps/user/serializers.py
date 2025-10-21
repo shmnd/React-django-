@@ -13,10 +13,11 @@ class CreateOrUpdateUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=False, write_only=True)
     is_admin = serializers.BooleanField(default=False)
     is_staff = serializers.BooleanField(default=True)
+    is_active = serializers.BooleanField(default=True)
 
     class Meta:
         model = Users
-        fields = ['user','phone_number','username','gender','name','email','password','is_admin','is_staff']
+        fields = ['user','phone_number','username','gender','name','email','password','is_admin','is_staff',"is_active"]
 
         extra_kwargs = {
             'password': {'write_only': True}  # Never return password in response
@@ -28,12 +29,12 @@ class CreateOrUpdateUserSerializer(serializers.ModelSerializer):
         user            = attrs.get('user', None)
         username        = attrs.get('username', None)
         password        = attrs.get('password', None)
-        phone_numer = attrs.get('phone_number',None)
+        phone_number = attrs.get('phone_number',None)
 
         
         user_query_set = Users.objects.filter(email=email)
         user_object    = Users.objects.filter(username=username)
-        user_phone = Users.objects.filter(phone_numer=phone_numer)
+        user_phone = Users.objects.filter(phone_number=phone_number)
 
         if username is not None:
             if not re.match("^[a-zA-Z0-9._@]*$", username):
