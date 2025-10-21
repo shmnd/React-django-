@@ -51,7 +51,7 @@ class Users(AbstractBaseUser,PermissionsMixin):
     password = models.CharField(max_length=255,blank=True, null=True,editable=False)
     profile_image = models.FileField(blank=True, null=True)
     phone_number = models.CharField(max_length=12,blank=True, null=True,unique=True)
-    gender = models.CharField(choices=Gender.choices,blank=True, null=True,default=Gender.other)
+    gender = models.CharField(max_length=30,choices=Gender.choices,blank=True, null=True,default=Gender.other)
     is_verified = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
