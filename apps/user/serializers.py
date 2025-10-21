@@ -16,7 +16,7 @@ class CreateOrUpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Users
-        fields = ['user','phone_number ','username','gender','name','email','password']
+        fields = ['user','phone_number','username','gender','name','email','password','is_admin','is_staff']
 
         extra_kwargs = {
             'password': {'write_only': True}  # Never return password in response
