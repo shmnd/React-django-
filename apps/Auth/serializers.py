@@ -136,3 +136,13 @@ class CreateOrUpdateUserSerializer(serializers.ModelSerializer):
         #             group_instance.user_set.add(instance)
                 
         return instance
+    
+
+class LoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    class Meta:
+        model = Users
+        fields = ['username','password']
+
