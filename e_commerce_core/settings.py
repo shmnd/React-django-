@@ -42,8 +42,59 @@ if not SECRET_KEY and DEBUG:
     SECRET_KEY = get_random_secret_key()
 
 
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '*',
+    # "ashwidea-api.aventusinformatics.com",
+    # "ashwidea-api.aventusinformatics.in",
+    # "ashwidea-web.aventusinformatics.com",
+    # "ashwidea-cms.aventusinformatics.com",
+    # "peep-cms.ashwidea.in",
+    # "peep-api.ashwidea.in",
+    # "peep.ashwidea.in"
 
-# ALLOWED_HOSTS = os.environ.get["ALLOWED_HOSTS","localhost","127.0.0.1,"]
+
+]
+# settings.py
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:8000",
+    # "https://ashwidea-api.aventusinformatics.com",
+    # "http://ashwidea-api.aventusinformatics.com",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    # "https://ashwidea-api.aventusinformatics.com/api",
+    # "https://ashwidea-api.aventusinformatics.in",
+    # "http://ashwidea-web.aventusinformatics.com",
+    # "https://ashwidea-web.aventusinformatics.com",
+    # "https://peep-cms.ashwidea.in",
+    # "https://peep-api.ashwidea.in",
+    # "https://peep.ashwidea.in"
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1",
+    # "https://ashwidea-api.aventusinformatics.com",
+    # "http://ashwidea-api.aventusinformatics.com",
+    # 'https://ashwidea-api.aventusinformatics.in',
+    "http://localhost:3000",
+    "http://localhost:3001",
+    # "http://ashwidea-web.aventusinformatics.com",
+    # "https://ashwidea-web.aventusinformatics.com",
+    # "https://peep-cms.ashwidea.in",
+    # "https://peep-api.ashwidea.in",
+    # "https://peep.ashwidea.in"
+]
+
+
+CORS_ALLOW_ALL_ORIGINS = True  
+
+# Set CORS_ALLOW_CREDENTIALS based on your requirements
+# CORS_ALLOW_CREDENTIALS = True
+
 
 
 # Application definition
