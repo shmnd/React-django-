@@ -64,6 +64,10 @@ class Users(AbstractBaseUser,PermissionsMixin):
     objects = UserManager()
 
 
+    def __str__(self):
+        return self.username
+
+
 class GeneratedAcsessToken(AbstractDateFieldMix):
     token = models.TextField()
     user = models.ForeignKey(Users,on_delete=models.CASCADE,blank=True, null=True)

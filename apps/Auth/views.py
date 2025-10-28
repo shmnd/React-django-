@@ -3,11 +3,13 @@ from rest_framework import generics,status
 from django.contrib import auth
 from apps.user.models import Users,GeneratedAcsessToken
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import CreateOrUpdateUserSerializer,LoginSerializer
+from .serializers import CreateOrUpdateUserSerializer,LoginSerializer,LogoutSerializer
 from drf_yasg.utils import swagger_auto_schema
 from e_commerce_core.helpers.helper import get_object_or_none
 from rest_framework.response import Response
 from .schemas import LoginResponseSchema
+from rest_framework.permissions import IsAuthenticated
+from e_commerce_core.helpers.helper import get_token_user_or_none
 import logging
 class CreateOrUpdateUserApiView(generics.GenericAPIView):
         
@@ -124,3 +126,38 @@ class LoginApiview(generics.GenericAPIView):
                 },status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+
+
+class LogoutApiView(generics.GenericAPIView):
+    
+
+    serializer_class          = LogoutSerializer
+    permission_classes        = (IsAuthenticated,)
+
+    
+    @swagger_auto_schema(tags=["Authorization"])
+    def post(self, request):
+        
+        
+        try:
+            user = get_token_user_or_none(request)
+            if user is not None:
+                GeneratedAcsessToken.objects.filter(user=user).delete()
+                user.save()
+            
+            self.response_format['status'] = True
+            self.response_format['status_code'] = status.HTTP_200_OK
+            return Response({
+                'status':True,
+                'status_code':status.HTTP_200_OK,
+            },tatus=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+
+            return Response({
+                'status_code':status.HTTP_500_INTERNAL_SERVER_ERROR,
+                'status':False,
+                'error':str(e),
+            }, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR)

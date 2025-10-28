@@ -2,7 +2,7 @@ import re
 from rest_framework import serializers
 from apps.user.models import Users
 from e_commerce_core.helpers.helper import get_object_or_none
-
+from rest_framework_simplejwt.tokens import RefreshToken,TokenError
 
 class CreateOrUpdateUserSerializer(serializers.ModelSerializer):
     user = serializers.IntegerField(allow_null=True,required=False)
@@ -146,3 +146,22 @@ class LoginSerializer(serializers.ModelSerializer):
         model = Users
         fields = ['username','password']
 
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    default_error_message = {
+        'bad_token':('Token is expired or invalid')
+    }
+
+    def validate(self,attrs):
+        self.token = attrs['refresh']
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+
+        except TokenError:
+            self.fail('bad_token')
