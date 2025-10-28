@@ -16,7 +16,7 @@ class CreateOrUpdateUserApiView(generics.GenericAPIView):
     serializer_class = CreateOrUpdateUserSerializer
     # permission_classes = (IsAuthenticated,)
     
-    @swagger_auto_schema(tags=["Autherization"])
+    @swagger_auto_schema(tags=["Authorization"])
     def post(self, request):
         try:
 
@@ -69,7 +69,7 @@ class LoginApiview(generics.GenericAPIView):
 
     serializer_class = LoginSerializer
 
-    @swagger_auto_schema(tags=["Autherization"])
+    @swagger_auto_schema(tags=["Authorization"])
 
     def post(self,request):
         try:
@@ -137,27 +137,24 @@ class LogoutApiView(generics.GenericAPIView):
     
     @swagger_auto_schema(tags=["Authorization"])
     def post(self, request):
-        
-        
         try:
             user = get_token_user_or_none(request)
             if user is not None:
                 GeneratedAcsessToken.objects.filter(user=user).delete()
                 user.save()
-            
-            self.response_format['status'] = True
-            self.response_format['status_code'] = status.HTTP_200_OK
-            return Response({
+    
+            return Response(
+            {
                 'status':True,
                 'status_code':status.HTTP_200_OK,
-            },tatus=status.HTTP_200_OK
-            )
+                'message':'logout successfull'
+            },status=status.HTTP_200_OK)
 
         except Exception as e:
 
-            return Response({
+            return Response(
+            {
                 'status_code':status.HTTP_500_INTERNAL_SERVER_ERROR,
                 'status':False,
                 'error':str(e),
-            }, 
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
