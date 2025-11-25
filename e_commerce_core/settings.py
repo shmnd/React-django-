@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import warnings,os,ast
+import warnings,os,ast,datetime
 from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 load_dotenv()
@@ -240,4 +240,16 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+}
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),      # Short-lived
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=90),       # Long-lived ✅
+    
+    # Optional: Sliding token (extends on each use)
+    'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(days=90),
+    'SLIDING_TOKEN_LIFETIME': datetime.timedelta(days=30),
+    'ROTATE_REFRESH_TOKENS': True,  # Get new refresh token each time
+    'BLACKLIST_AFTER_ROTATION': True,  # Invalidate old tokens
 }
