@@ -77,6 +77,7 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1",
+    "http://127.0.0.1:3000",
     # "https://ashwidea-api.aventusinformatics.com",
     # "http://ashwidea-api.aventusinformatics.com",
     # 'https://ashwidea-api.aventusinformatics.in',
@@ -162,8 +163,13 @@ WSGI_APPLICATION = 'e_commerce_core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+    
     }
 }
 
