@@ -11,6 +11,7 @@ from .schemas import LoginResponseSchema
 from rest_framework.permissions import IsAuthenticated
 from e_commerce_core.helpers.helper import get_token_user_or_none
 import logging
+import datetime
 class CreateOrUpdateUserApiView(generics.GenericAPIView):
         
     serializer_class = CreateOrUpdateUserSerializer
@@ -99,6 +100,8 @@ class LoginApiview(generics.GenericAPIView):
                     'refresh':str(refresh)
                 }
                 GeneratedAcsessToken.objects.create(user=user,token=token)
+                user.last_login = datetime.datetime.now()
+                user.save()
                 return Response(
                     {
                         'status_code': status.HTTP_202_ACCEPTED,
