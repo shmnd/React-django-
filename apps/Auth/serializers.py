@@ -7,7 +7,6 @@ from rest_framework_simplejwt.tokens import RefreshToken,TokenError
 class CreateOrUpdateUserSerializer(serializers.ModelSerializer):
     user = serializers.IntegerField(allow_null=True,required=False)
     phone_number = serializers.CharField(required=True,allow_null=True,allow_blank=True)
-    # profile_image             = serializers.CharField(required=False, allow_null=True, allow_blank=True)
     username = serializers.CharField(required=True)
     gender = serializers.CharField(required=False)
     name = serializers.CharField(required=False)
@@ -77,31 +76,13 @@ class CreateOrUpdateUserSerializer(serializers.ModelSerializer):
         instance.is_admin         = validated_data.get('is_admin')
         instance.is_staff         = True
         instance.save()
-        
-        # groups = validated_data.pop('groups')
-        
-        # for group_instance in groups:
-        #     if group_instance is not None:
-        #         group_instance.user_set.add(instance)
-        
         return instance
     
 
 
     def update(self, instance, validated_data):
         
-        # groups = validated_data.pop('groups')
-        
-        # active_groups = instance.user_groups.all().values_list('id',flat=True)
-                
-        # remove_groups = [item for item in active_groups if str(item) not in groups]
-        
-        # [groups.remove(str(item)) for item in active_groups if str(item) in groups]
-        
         password = validated_data.get('password','')
-        # emp_id = validated_data.get('emp_id')
-        # name = validated_data.get('name')
-     
  
         instance.username = validated_data.get('username')
         instance.email = validated_data.get('email')
@@ -123,17 +104,6 @@ class CreateOrUpdateUserSerializer(serializers.ModelSerializer):
             instance.is_staff = validated_data.get('is_staff')
         
         instance.save()
-
-        
-        # for remove_group in remove_groups:
-        #     remove_group_instance = get_object_or_none(Group,id=remove_group)
-        #     if remove_group_instance is not None:
-        #         remove_group_instance.user_set.remove(instance)
-        
-        # if instance is not None:
-        #     for group_instance in groups:
-        #         if group_instance is not None:
-        #             group_instance.user_set.add(instance)
                 
         return instance
     

@@ -114,6 +114,7 @@ LOCAL_APPS = [
     'e_commerce_core',
     'apps.Auth',
     'apps.user' 
+    'admin.auth',
     
 ]
 

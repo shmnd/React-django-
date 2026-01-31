@@ -42,7 +42,11 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='api/docs/',)),
-    
+
+    # admin urls
+    path('admin/',include('admin.auth.urls')),
+
+    # api urls
     re_path(r'^api/',include([
         path('auth/',include('apps.Auth.urls')),
         path('users/',include('apps.user.urls')),
