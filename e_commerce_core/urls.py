@@ -44,7 +44,7 @@ urlpatterns = [
     path('', RedirectView.as_view(url='api/docs/',)),
 
     # admin urls
-    path('admin/',include('admin.auth.urls')),
+    path('admin/',include('admin.authentication.urls')),
 
     # api urls
     re_path(r'^api/',include([

@@ -112,9 +112,12 @@ INSTALLED_APPS = [
 
 LOCAL_APPS = [
     'e_commerce_core',
+    # admin apps
+    'admin.authentication',
+
+    # api 
     'apps.Auth',
     'apps.user' 
-    'admin.auth',
     
 ]
 
