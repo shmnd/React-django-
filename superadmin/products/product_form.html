@@ -1,0 +1,88 @@
+{% include 'superadmin/layout/header.html' %}
+{% load static %}
+
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <div class="main-container container-fluid">
+            <div class="page-header">
+                <h1 class="page-title">{% if object %}Edit{% else %}Add{% endif %} Product</h1>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10 col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Product Details</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-4 mb-4">
+                                        <label class="form-label">Category <span class="text-danger">*</span></label>
+                                        {{ form.category }}
+                                        {% if form.category.errors %}
+                                        <div class="text-danger small">{{ form.category.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4 mb-4">
+                                        <label class="form-label">Product Model <span
+                                                class="text-danger">*</span></label>
+                                        {{ form.product_model }}
+                                    </div>
+                                    <div class="col-md-4 mb-4">
+                                        <label class="form-label">Product Name</label>
+                                        {{ form.name }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label">SKU</label>
+                                        {{ form.sku }}
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label">Thumbnail Image</label>
+                                        {{ form.thumbnail_image }}
+                                        {% if object.thumbnail_image %}
+                                        <div class="mt-2 text-center">
+                                            <img src="{{ object.thumbnail_image.url }}" class="img-thumbnail"
+                                                style="max-height: 80px;">
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    {{ form.description }}
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="form-check form-switch">
+                                        {{ form.is_active }}
+                                        <label class="form-check-label ms-2">Active Status</label>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 pt-4 border-top d-flex justify-content-between">
+                                    <div>
+                                        <button type="submit" class="btn btn-primary px-5">Save Product</button>
+                                        {% if object %}
+                                        <a href="{% url 'variant_mgmt' pk=object.id %}" class="btn btn-info px-4 ms-2">
+                                            <i class="fe fe-layers me-1"></i>Manage Variants & Medical Data
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                    <a href="{% url 'product_list' %}" class="btn btn-light px-5">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'superadmin/layout/footer.html' %}

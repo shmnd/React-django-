@@ -1,0 +1,158 @@
+{% include 'superadmin/layout/header.html' %}
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <div class="main-container container-fluid">
+            <div class="page-header">
+                <h1 class="page-title">Variant Type Master</h1>
+                <a href="{% url 'variant_type_add' %}" class="btn btn-primary"><i class="fe fe-plus me-2"></i>Add
+                    Variant Type</a>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Display Type</th>
+                                    <th>Selection</th>
+                                    <th>Required</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vt in variant_types %}
+                                <tr>
+                                    <td class="fw-bold">{{vt.name}}</td>
+                                    <td><span
+                                            class="badge bg-primary-transparent text-primary">{{vt.get_display_type_display}}</span>
+                                    </td>
+                                    <td><span
+                                            class="badge bg-info-transparent text-info">{{vt.get_selection_type_display}}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if vt.is_required %}
+                                        <span class="text-danger"><i class="fe fe-check-circle"></i></span>
+                                        {% else %}
+                                        <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if vt.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-light text-dark">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <a href="{% url 'variant_type_edit' pk=vt.id %}"
+                                                class="btn btn-sm btn-primary-transparent" title="Edit">
+                                                <i class="fe fe-edit"></i>
+                                            </a>
+                                            <button
+                                                class="btn btn-sm {% if vt.is_active %}btn-danger-transparent{% else %}btn-success-transparent{% endif %} toggle-status-btn"
+                                                data-id="{{ vt.id }}" data-type="variant_type"
+                                                data-current-status="{{ vt.is_active|yesno:'true,false' }}"
+                                                title="{% if vt.is_active %}Deactivate{% else %}Activate{% endif %}">
+                                                <i
+                                                    class="fe {% if vt.is_active %}fe-slash{% else %}fe-check{% endif %}"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <div class="text-muted mb-3"><i class="fe fe-layers fs-40"></i></div>
+                                        <div class="text-muted">No variant types defined yet. Create your first one!
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Deactivation Confirmation Modal -->
+<div class="modal fade" id="deactivateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">This will deactivate the item. Existing data will not be affected.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmDeactivateBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
+        const deactivateModal = new bootstrap.Modal(document.getElementById('deactivateModal'));
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const confirmBtn = document.getElementById('confirmDeactivateBtn');
+        let currentId = null;
+        let currentAction = null;
+
+        document.querySelectorAll('.toggle-status-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                currentId = this.dataset.id;
+                const isActive = this.dataset.currentStatus === 'true';
+                currentAction = isActive ? 'Deactivate' : 'Activate';
+
+                modalTitle.textContent = `${currentAction} Variant Type`;
+                modalMessage.textContent = isActive
+                    ? "This will deactivate the item. Existing data will not be affected, but it will be hidden from new selections."
+                    : "This will reactivate the item for use in new products.";
+
+                confirmBtn.className = isActive ? "btn btn-danger" : "btn btn-success";
+                confirmBtn.textContent = currentAction;
+
+                deactivateModal.show();
+            });
+        });
+
+        confirmBtn.addEventListener('click', function () {
+            if (!currentId) return;
+
+            fetch(`/superadmin/variant-types/toggle-status/${currentId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An unexpected error occurred.');
+                })
+                .finally(() => {
+                    deactivateModal.hide();
+                });
+        });
+    });
+</script>
+{% include 'superadmin/layout/footer.html' %}

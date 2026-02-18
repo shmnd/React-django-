@@ -1,0 +1,78 @@
+{% load custom_tags %}
+
+<div class="col-xl-12">
+    <h4>{{title}}</h4>
+    <div class="table-responsive">
+
+        <table class="table border-top table-bordered mb-0 table-hover">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th><span>{{project_type|title}}</span><br />Spend/Hour</th>
+                    <th><span>{{opposite_label|title}}</span><br />Spend/Hour</th>
+                    <th>Report</th>
+                    <th>Is Productive</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                {% if project_type == "productive" and project.daily_report__project__is_productive and
+                project.total_spend > 0 %}
+                <tr>
+                    <td>{{ project.daily_report__project__name }}</td>
+                    <td>₹{{ project.total_spend|floatformat:0|indian_number|default:0 }} / {{ project.total_hours }} Hrs
+                    </td>
+                    <td>
+                        ₹{{ project.opposite_spend|floatformat:0|indian_number|default:0 }} / {{ project.opposite_hours
+                        }} Hrs </td>
+                    <td><button class="btn btn-info"
+                            onclick="productiveReportModal(`{% url 'productive_report' project.daily_report__project__id %}`, `{{project_type}}`)"><i
+                                class="fa fa-eye"></i></button>
+                    </td>
+                    <td>
+                        <div class="material-switch">
+                            <input id="someSwitchOptionSuccess{{project.daily_report__project__id}}"
+                                name="someSwitchOption" type="checkbox" {% if
+                                project.daily_report__project__is_productive %}checked{% endif %}
+                                onchange="changeProductiveStatus(`{% url 'change_productive_status'  project.daily_report__project__id %}`)" />
+                            <label for="someSwitchOptionSuccess{{project.daily_report__project__id}}"
+                                class="label-success"></label>
+                        </div>
+
+                    </td>
+                </tr>
+                {% elif project_type == "non_productive" and not project.daily_report__project__is_productive and
+                project.total_spend > 0 %}
+                <tr>
+                    <td>{{ project.daily_report__project__name }}</td>
+                    <td>₹{{ project.total_spend|floatformat:0|indian_number|default:0 }} / {{ project.total_hours }} Hrs
+                    </td>
+                    <td>
+                        ₹{{ project.opposite_spend|floatformat:0|indian_number|default:0 }} /
+                        {{ project.opposite_hours }} Hrs </td>
+                    <td><button class="btn btn-info"
+                            onclick="productiveReportModal(`{% url 'productive_report' project.daily_report__project__id %}`, `{{project_type}}`)"><i
+                                class="fa fa-eye"></i></button>
+                    </td>
+                    <td>
+                        <div class="material-switch">
+                            <input id="someSwitchOptionSuccess{{project.daily_report__project__id}}"
+                                name="someSwitchOption" type="checkbox" {% if
+                                project.daily_report__project__is_productive %}checked{% endif %}
+                                onchange="changeProductiveStatus(`{% url 'change_productive_status'  project.daily_report__project__id %}`)" />
+                            <label for="someSwitchOptionSuccess{{project.daily_report__project__id}}"
+                                class="label-success"></label>
+                        </div>
+
+                    </td>
+                </tr>
+                {% endif %}
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No records found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

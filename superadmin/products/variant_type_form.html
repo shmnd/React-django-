@@ -1,0 +1,73 @@
+{% include 'superadmin/layout/header.html' %}
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <div class="main-container container-fluid">
+            <div class="page-header">
+                <h1 class="page-title">Variant Type Details</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+
+                                {% if form.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>Errors:</strong>
+                                    <ul class="mb-0">
+                                        {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                        <li>{{ field }}: {{ error }}</li>
+                                        {% endfor %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+
+                                <div class="mb-3">
+                                    <label class="form-label">Variant Name <span class="text-danger">*</span></label>
+                                    {{form.name}}
+                                    <small class="text-muted d-block">e.g., Band Color, Padding, Socket Type</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Display Type <span class="text-danger">*</span></label>
+                                    {{form.display_type}}
+                                    <small class="text-muted d-block">How options are shown to customers</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Selection Type <span class="text-danger">*</span></label>
+                                    {{form.selection_type}}
+                                    <small class="text-muted d-block">Can customer select one or multiple?</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        {{form.is_required}}
+                                        <label class="form-check-label ms-2">Is Required</label>
+                                    </div>
+                                    <small class="text-muted d-block">Must customer select this variant?</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        {{form.is_active}}
+                                        <label class="form-check-label ms-2">Active Status</label>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <button type="submit" class="btn btn-primary px-5">Save Variant Type</button>
+                                    <a href="{% url 'variant_type_list' %}" class="btn btn-light px-5">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'superadmin/layout/footer.html' %}

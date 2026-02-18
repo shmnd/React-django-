@@ -1,0 +1,38 @@
+{% load custom_tags %}
+
+<div class="col-xl-12">
+    <h4>{{ title }}</h4>
+    <div class="table-responsive">
+
+        <table class="table border-top table-bordered mb-0 table-hover">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Total Hours</th>
+                    <th>Total Cost</th>
+                    <th>Report</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                <tr>
+                    <td>{{ project.project__name }}</td>
+                    <td>{{ project.total_hours|floatformat:0 }} Hrs</td>
+                    <td>₹{{ project.total_cost|floatformat:0|indian_number }}</td>
+
+                    <td>
+                        <button class="btn btn-info"
+                            onclick="projectReportDetailModal(`{% url 'project_report_detail' project.project__id %}`)">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No records found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

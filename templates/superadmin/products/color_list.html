@@ -1,0 +1,44 @@
+{% include 'superadmin/layout/header.html' %}
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <div class="main-container container-fluid">
+            <div class="page-header">
+                <h1 class="page-title">Color Master</h1>
+                <a href="{% url 'color_add' %}" class="btn btn-primary"><i class="fe fe-plus me-2"></i>Add Color</a>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered align-middle">
+                        <thead>
+                            <tr>
+                                <th>Color</th>
+                                <th>Name</th>
+                                <th>Hex</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for color in colors %}
+                            <tr>
+                                <td>
+                                    <div
+                                        style="width:30px;height:30px;background:{{color.hex_code}};border-radius:50%;border:1px solid #ddd">
+                                    </div>
+                                </td>
+                                <td>{{color.name}}</td>
+                                <td><code>{{color.hex_code}}</code></td>
+                                <td>{% if color.is_active %}<span class="badge bg-success">Active</span>{% else %}<span
+                                        class="badge bg-light">Inactive</span>{% endif %}</td>
+                                <td><a href="{% url 'color_edit' pk=color.id %}" class="btn btn-sm btn-primary"><i
+                                            class="fe fe-edit"></i></a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'superadmin/layout/footer.html' %}
