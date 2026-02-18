@@ -1,0 +1,63 @@
+{% include 'superadmin/layout/header.html' %}
+{% load static %}
+
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <div class="main-container container-fluid">
+            <div class="page-header">
+                <h1 class="page-title">{% if object %}Edit{% else %}Add{% endif %} Category</h1>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Category Details</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    <label class="form-label">Category Name</label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    {{ form.description }}
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Category Image</label>
+                                    {{ form.image }}
+                                    {% if object.image %}
+                                    <div class="mt-2">
+                                        <img src="{{ object.image.url }}" class="img-thumbnail"
+                                            style="max-height: 100px;">
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="form-check form-switch">
+                                        {{ form.is_active }}
+                                        <label class="form-check-label ms-2">Active Status</label>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 pt-4 border-top">
+                                    <button type="submit" class="btn btn-primary px-5">Save Category</button>
+                                    <a href="{% url 'category_list' %}" class="btn btn-light px-5 ms-2">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'superadmin/layout/footer.html' %}

@@ -1,0 +1,119 @@
+{% include 'superadmin/layout/header.html' %}
+{% load static %}
+
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <div class="main-container container-fluid">
+            <div class="page-header">
+                <h1 class="page-title">User Management</h1>
+                <div>
+                    <a href="{% url 'user_add' %}" class="btn btn-primary"><i class="fe fe-plus me-2"></i>Add User</a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Users List</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Email</th>
+                                            <th>Name</th>
+                                            <th>Groups</th>
+                                            <th>Staff Access</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.name }}</td>
+
+                                        <td>
+                                            {% for group in user.groups.all %}
+                                                <span class="badge bg-primary">{{ group.name }}</span>
+                                            {% empty %}
+                                                <span class="badge bg-secondary">No Group</span>
+                                            {% endfor %}
+                                        </td>
+
+                                        <td>
+                                            {% if user.is_staff %}
+                                                <span class="badge bg-success-transparent text-success px-3">Yes</span>
+                                            {% else %}
+                                                <span class="badge bg-light text-muted px-3">No</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                    id="statusSwitch{{ user.id }}"
+                                                    {% if user.is_active %}checked{% endif %}
+                                                    onchange="toggleUserStatus({{ user.id }})">
+
+                                                <label class="form-check-label" for="statusSwitch{{ user.id }}">
+                                                    {% if user.is_active %}Active{% else %}Inactive{% endif %}
+                                                </label>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <a href="{% url 'user_edit' pk=user.id %}" class="btn btn-sm btn-primary">
+                                                <i class="fe fe-edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">No users found</td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleUserStatus(userId) {
+        if (!userId) return;
+        fetch(`/superadmin/users/toggle-status/${userId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const label = document.querySelector(`label[for="statusSwitch${userId}"]`);
+                    if (label) label.textContent = data.is_active ? 'Active' : 'Inactive';
+                } else {
+                    alert('Error toggling status: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while toggling status.');
+            });
+    }
+</script>
+
+{% include 'superadmin/layout/footer.html' %}

@@ -1,0 +1,135 @@
+{% include 'superadmin/layout/header.html' %}
+{% load static %}
+
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <div class="main-container container-fluid">
+            <div class="page-header">
+                <h1 class="page-title">{% if object %}Edit Role: {{ object.name }}{% else %}Add New Role{% endif %}</h1>
+                <div>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'role_list' %}">Roles</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            {% if object %}Edit{% else %}Add{% endif %} Role</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-12 mb-4">
+                                        <label class="form-label">Role Name <span class="text-danger">*</span></label>
+                                        {{ form.name }}
+                                        {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors }}
+                                        </div>{% endif %}
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="card shadow-none border">
+                                            <div
+                                                class="card-header border-bottom d-flex justify-content-between align-items-center bg-light">
+                                                <h4 class="card-title mb-0"><i
+                                                        class="fe fe-lock me-2 text-primary"></i>Assign Permissions</h4>
+                                                <div class="input-group input-group-sm w-50">
+                                                    <span class="input-group-text bg-white border-end-0"><i
+                                                            class="fe fe-search"></i></span>
+                                                    <input type="text" id="permSearch"
+                                                        class="form-control border-start-0 ps-0"
+                                                        placeholder="Filter permissions (e.g. 'user', 'add')...">
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive"
+                                                    style="max-height: 500px; overflow-y: auto;">
+                                                    <table class="table table-hover table-vcenter text-nowrap mb-0"
+                                                        id="permTable">
+                                                        <thead class="bg-light sticky-top">
+                                                            <tr>
+                                                                <th class="border-bottom-0 w-5">Select</th>
+                                                                <th class="border-bottom-0">Permission Name</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for perm in form.permissions %}
+                                                            <tr class="perm-row">
+                                                                <td>
+                                                                    <div class="form-check">
+                                                                        {{ perm.tag }}
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <label class="form-check-label d-block text-wrap"
+                                                                        style="cursor: pointer;">
+                                                                        {{ perm.choice_label }}
+                                                                    </label>
+                                                                </td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-5 border-top pt-4 text-end">
+                                    <a href="{% url 'role_list' %}" class="btn btn-light px-5 me-2">Cancel</a>
+                                    <button type="submit" class="btn btn-primary px-5 shadow-primary">Save Role</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .sticky-top {
+        top: 0;
+        z-index: 1020;
+    }
+
+    .shadow-primary {
+        box-shadow: 0 4px 15px rgba(98, 89, 202, 0.2);
+    }
+
+    .perm-row:hover {
+        background-color: #f8f7ff;
+    }
+</style>
+
+<script>
+    document.getElementById('permSearch').addEventListener('keyup', function () {
+        let searchValue = this.value.toLowerCase();
+        let rows = document.querySelectorAll('.perm-row');
+
+        rows.forEach(row => {
+            let text = row.querySelector('label').textContent.toLowerCase();
+            if (text.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    // Make table rows clickable
+    document.querySelectorAll('.perm-row').forEach(row => {
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', function (e) {
+            if (e.target.tagName !== 'INPUT') {
+                const cb = this.querySelector('input[type="checkbox"]');
+                cb.checked = !cb.checked;
+            }
+        });
+    });
+</script>
+
+{% include 'superadmin/layout/footer.html' %}

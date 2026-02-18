@@ -1,0 +1,42 @@
+{% load custom_tags %}
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Used Hours</th>
+                <th>Used Cost</th>
+                <th>Unused Hours</th>
+                <th>Unused Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users_data %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.department }}</td>
+                <td>{{ user.report_hours|floatformat:2 }} Hrs</td>
+                <td>₹{{ user.report_spend|floatformat:0|indian_number }}</td>
+                <td>{{ user.unused_hours|floatformat:2 }} Hrs</td>
+                <td>₹{{ user.unused_spend|floatformat:0|indian_number }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No records found</td>
+            </tr>
+            {% endfor %}
+
+            {% if totals %}
+            <tr class="table-secondary fw-bold">
+                <td colspan="2">Total</td>
+                <td>{{ totals.report_hours|floatformat:2 }} Hrs</td>
+                <td>₹{{ totals.report_spend|floatformat:0|indian_number }}</td>
+                <td>{{ totals.unused_hours|floatformat:2 }} Hrs</td>
+                <td>₹{{ totals.unused_spend|floatformat:0|indian_number }}</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>

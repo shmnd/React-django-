@@ -1,0 +1,64 @@
+{% include 'superadmin/layout/header.html' %}
+{% load static %}
+
+<!--app-content open-->
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <!-- CONTAINER -->
+        <div class="main-container container-fluid">
+            <!-- PAGE-HEADER -->
+            <div class="page-header">
+                <h1 class="page-title">Dashboard</h1>
+            </div>
+            <!-- PAGE-HEADER END -->
+
+
+            <div class="row mb-3">
+                <div class="col-lg-3 mb-3">
+                    <label for="">From:</label>
+                    <input type="date" name="from_date" id="productive_from_date" class="form-control" value="{{ from_date|date:'Y-m-d' }}"> 
+                </div>
+                <div class="col-lg-3 mb-3">
+                    <label for="">To:</label>
+                    <input type="date" name="to_date" id="productive_to_date" class="form-control">
+                </div>
+                <div class="col-lg-3 mb-3">
+                    <label for="" class="invisible w-100">btn</label>
+                    <button class="btn_filter" type="button"
+                        onclick="filterProductiveByDate(`{% url 'dashboard_view' %}`)">Filter</button>
+                </div>
+            </div>
+
+            <!-- ROW OPEN
+            
+            <div class="row row-cards novi_cards" id="productive_cards_section">
+                
+                {% include "superadmin/index/productive_cards.html" %}
+                
+            </div> -->
+            <!-- ROW CLOSED -->
+          
+<!-- 
+            <div class="row d-none" id="productive_table_section" >
+
+            </div> -->
+
+            
+
+        </div>
+        <!-- CONTAINER END -->
+    </div>
+</div>
+<!--app-content close-->
+
+<!-- <div class="modal fade responceModal" id="productive_report_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md modal-dialog-centered " role="document">
+        <div class="modal-content" id="productive_report_modal_body">
+            
+        </div>
+    </div>
+</div> -->
+
+
+
+{% include 'superadmin/layout/footer.html' %}

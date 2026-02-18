@@ -1,0 +1,48 @@
+{% include 'superadmin/layout/header.html' %}
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <div class="main-container container-fluid">
+            <div class="page-header">
+                <h1 class="page-title">Attribute Details</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label">Attribute Name</label>
+                                    {{form.name}}
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Field Type</label>
+                                    {{form.field_type}}
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Unit (Optional)</label>
+                                    {{form.unit}}
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        {{form.is_required}}
+                                        <label class="form-check-label ms-2">Required Field</label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        {{form.is_active}}
+                                        <label class="form-check-label ms-2">Active Status</label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Attribute</button>
+                                <a href="{% url 'attribute_list' %}" class="btn btn-light">Cancel</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'superadmin/layout/footer.html' %}

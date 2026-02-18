@@ -1,0 +1,35 @@
+{% include 'superadmin/layout/header.html' %}
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <div class="main-container container-fluid">
+            <div class="page-header">
+                <h1 class="page-title">Product Model Details</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label">Model Name</label>
+                                    {{form.name}}
+                                    <small class="text-muted">E.g., Gen 1, Pro Series, Lite Version</small>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        {{form.is_active}}
+                                        <label class="form-check-label ms-2">Active Status</label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Model</button>
+                                <a href="{% url 'product_model_list' %}" class="btn btn-light">Cancel</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'superadmin/layout/footer.html' %}
