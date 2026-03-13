@@ -41,7 +41,9 @@ if not SECRET_KEY and DEBUG:
     warnings.warn("SECRET_KEY not configured, using a random temporary key.")
     SECRET_KEY = get_random_secret_key()
 
+# This should take from .env file
 
+# ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 ALLOWED_HOSTS = [
     '127.0.0.1',
     '*',
@@ -52,12 +54,10 @@ ALLOWED_HOSTS = [
     # "peep-cms.ashwidea.in",
     # "peep-api.ashwidea.in",
     # "peep.ashwidea.in"
-
-
 ]
-# settings.py
 
-
+# this should come from .env file
+# CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:8000",
@@ -74,6 +74,8 @@ CSRF_TRUSTED_ORIGINS = [
     # "https://peep.ashwidea.in"
 ]
 
+# This should take from .env file
+# CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1",
@@ -125,7 +127,11 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     "corsheaders",
     'drf_yasg',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'django_filters',
+    'django_celery_beat',
+    'django_celery_results',
+    'storages',
 ]
 
 
@@ -263,3 +269,43 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,  # Get new refresh token each time
     'BLACKLIST_AFTER_ROTATION': True,  # Invalidate old tokens
 }
+
+
+# AWS S3 Configuration
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+
+AWS_STORAGE_BUCKET_NAME = "ecommerce-bucket"
+AWS_S3_REGION_NAME = "ap-south-1"
+
+AWS_DEFAULT_ACL = None
+AWS_S3_FILE_OVERWRITE = False
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+
+# CELERY Configuration
+
+# CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
+# CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
+# CELERY_ACCEPT_CONTENT = ["json"]
+# CELERY_TASK_SERIALIZER = "json"
+# CELERY_RESULT_SERIALIZER = "json"
+# CELERY_TIMEZONE = TIME_ZONE
+# CELERY_BEAT_SCHEDULE = {}
+
+
+CORS_ALLOW_ALL_ORIGINS = True  # For development only
+
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 3145728  # 3MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 3145728  # 3MB
