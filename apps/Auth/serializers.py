@@ -135,3 +135,6 @@ class LogoutSerializer(serializers.Serializer):
 
         except TokenError:
             self.fail('bad_token')
+
+class TokenRefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()

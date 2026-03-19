@@ -2,8 +2,8 @@ import sys, os
 from rest_framework import generics,status
 from django.contrib import auth
 from apps.user.models import Users,GeneratedAcsessToken
-from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import CreateOrUpdateUserSerializer,LoginSerializer,LogoutSerializer
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from .serializers import CreateOrUpdateUserSerializer,LoginSerializer,LogoutSerializer, TokenRefreshSerializer
 from drf_yasg.utils import swagger_auto_schema
 from e_commerce_core.helpers.helper import get_object_or_none
 from rest_framework.response import Response
@@ -161,3 +161,62 @@ class LogoutApiView(generics.GenericAPIView):
                 'status':False,
                 'error':str(e),
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class TokenRefreshApiView(generics.GenericAPIView):
+    
+    serializer_class = TokenRefreshSerializer
+
+    @swagger_auto_schema(tags=["Authorization"])
+    def post(self, request):
+        try:
+            serializer = self.serializer_class(data=request.data)
+
+            if not serializer.is_valid():
+                return Response(
+                    {
+                        "status_code": status.HTTP_400_BAD_REQUEST,
+                        "status": False,
+                        "errors": serializer.errors,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            refresh_token = serializer.validated_data.get("refresh")
+            
+            # This will decode and validate the token
+            token = RefreshToken(refresh_token)
+            new_access = str(token.access_token)
+            
+            # SimpleJWT payload typically stores the user id as 'user_id'
+            user_id = token.payload.get('user_id')
+            user = get_object_or_none(Users, pk=user_id)
+            
+            if user:
+                GeneratedAcsessToken.objects.filter(user=user).update(token=new_access)
+
+            return Response({
+                "status_code": status.HTTP_200_OK,
+                "status": True,
+                "data": {
+                    "access": new_access
+                }
+            }, status=status.HTTP_200_OK)
+
+        except TokenError as e:
+            return Response(
+                {
+                    "status_code": status.HTTP_401_UNAUTHORIZED,
+                    "status": False,
+                    "message": "Invalid or expired refresh token"
+                }, status=status.HTTP_401_UNAUTHORIZED
+            )
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            return Response(
+                {
+                    'status_code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    'status': False,
+                    'error': f'exc_type : {exc_type},fname : {fname},tb_lineno : {exc_tb.tb_lineno},error : {str(e)}'
+                },
+                status.HTTP_500_INTERNAL_SERVER_ERROR)
